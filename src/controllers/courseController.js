@@ -3,17 +3,128 @@
 // Question : Pourquoi séparer la logique métier des routes ?
 // Réponse :
 
-const { ObjectId } = require('mongodb');
-const db = require('../config/db');
-const mongoService = require('../services/mongoService');
-const redisService = require('../services/redisService');
+const { ObjectId } = require("mongodb");
+const mongoService = require("../services/mongoService");
+const redisService = require("../services/redisService");
 
 async function createCourse(req, res) {
-  // TODO: Implémenter la création d'un cours
-  // Utiliser les services pour la logique réutilisable
+  try {
+    const course = {
+      title: req.body.title,
+      description: req.body.description,
+      instructor: req.body.instructor,
+      price: req.body.price,
+      duration: req.body.duration,
+      topics: req.body.topics || [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const result = await mongoService.insertOne("courses", course);
+    await redisService.invalidateCache("courses:list");
+
+    res.status(201).json({
+      success: true,
+      data: { ...course, _id: result.insertedId },
+    });
+  } catch (error) {
+    console.error("Error creating course:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to create course",
+    });
+  }
 }
 
-// Export des contrôleurs
+async function getCourse(req, res) {
+  try {
+    const { id } = req.params;
+    const cacheKey = `course:${id}`;
+
+    // Try to get from cache first
+    const cachedCourse = await redisService.getCachedData(cacheKey);
+    if (cachedCourse) {
+      return res.json({
+        success: true,
+        data: cachedCourse,
+        source: "cache",
+      });
+    }
+
+    // If not in cache, get from MongoDB
+    const course = await mongoService.findOneById("courses", id);
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        error: "Course not found",
+      });
+    }
+
+    // Cache the result
+    await redisService.cacheData(cacheKey, course);
+
+    res.json({
+      success: true,
+      data: course,
+      source: "db",
+    });
+  } catch (error) {
+    console.error("Error getting course:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to get course",
+    });
+  }
+}
+
+async function getCourseStats(req, res) {
+  try {
+    const cacheKey = "courses:stats";
+
+    // Try to get from cache first
+    const cachedStats = await redisService.getCachedData(cacheKey);
+    if (cachedStats) {
+      return res.json({
+        success: true,
+        data: cachedStats,
+        source: "cache",
+      });
+    }
+
+    // If not in cache, calculate stats
+    const courses = await mongoService.find("courses");
+    const stats = {
+      totalCourses: courses.length,
+      averagePrice:
+        courses.reduce((acc, course) => acc + course.price, 0) / courses.length,
+      totalDuration: courses.reduce((acc, course) => acc + course.duration, 0),
+      topicsDistribution: courses.reduce((acc, course) => {
+        course.topics.forEach((topic) => {
+          acc[topic] = (acc[topic] || 0) + 1;
+        });
+        return acc;
+      }, {}),
+    };
+
+    // Cache the stats
+    await redisService.cacheData(cacheKey, stats, 1800); // Cache for 30 minutes
+
+    res.json({
+      success: true,
+      data: stats,
+      source: "db",
+    });
+  } catch (error) {
+    console.error("Error getting course stats:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to get course stats",
+    });
+  }
+}
+
 module.exports = {
-  // TODO: Exporter les fonctions du contrôleur
+  createCourse,
+  getCourse,
+  getCourseStats,
 };

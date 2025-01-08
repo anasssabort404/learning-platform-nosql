@@ -6,7 +6,11 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-const requiredEnvVars = ["MONGODB_URI", "MONGODB_DB_NAME", "REDIS_URI"];
+const requiredEnvVars = [
+  "mongodb+srv://anass:root@cluster0.dhlll.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+  "learning_platform",
+  "redis://127.0.0.1:6379",
+];
 
 function validateEnv() {
   const missingVars = requiredEnvVars.filter(
