@@ -7,7 +7,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const requiredEnvVars = [
-  "mongodb+srv://anass:root@cluster0.dhlll.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+  "mongodb+srv://anass:************@cluster0.dhlll.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
   "learning_platform",
   "redis://127.0.0.1:6379",
 ];
