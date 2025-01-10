@@ -4,7 +4,7 @@ const redisService = require("../services/redisService");
 
 async function createCourse(req, res) {
   try {
-    //R2cupération des information d'aprèr la requête
+    //Récupération des information d'aprèr la requête
     const course = {
       title: req.body.title,
       description: req.body.description,
@@ -30,6 +30,36 @@ async function createCourse(req, res) {
     res.status(500).json({
       success: false,
       error: "Failed to create course",
+    });
+  }
+}
+
+async function updateCourse(req, res) {
+  try {
+    const courseId = req.params.id;
+    const updatedCourse = {
+      ...req.body,
+      updatedAt: new Date(),
+    };
+
+    // mise à jour du document
+    const result = await mongoService.updateOne(
+      "courses",
+      courseId,
+      updatedCourse
+    );
+
+    await redisService.invalidateCache("courses:list");
+
+    res.status(201).json({
+      success: true,
+      data: { ...updateCourse, _id: courseId },
+    });
+  } catch (error) {
+    console.error("Error updating course:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to update course",
     });
   }
 }
@@ -206,4 +236,5 @@ module.exports = {
   getCourse,
   getCourseStats,
   deleteCourse,
+  updateCourse,
 };

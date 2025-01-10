@@ -19,6 +19,9 @@ Pour exécuter le projet, vous devrez simplement installer les dépendances en u
 - **DELETE** -> `localhost:3000/api/courses/:id`  
   Cette route permet de supprimer un cours en utilisant son id
 
+- **PUT** -> `localhost:3000/api/courses/:id`  
+  Cette route permet de modifier un cours en utilisant son id et l'objet json de modifications suivant la même structure d'objet de création (juste les attributs à modifiés)
+
 - **POST** -> `localhost:3000/api/courses/`  
   Cette route permet d'ajouter un nouveau cours selon l'exemple suivant :
 
