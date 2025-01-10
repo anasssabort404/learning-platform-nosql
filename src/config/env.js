@@ -1,8 +1,3 @@
-// Question: Pourquoi est-il important de valider les variables d'environnement au démarrage ?
-// Réponse :
-// Question: Que se passe-t-il si une variable requise est manquante ?
-// Réponse :
-
 const dotenv = require("dotenv");
 dotenv.config();
 

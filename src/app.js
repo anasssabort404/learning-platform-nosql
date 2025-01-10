@@ -1,6 +1,3 @@
-// Question: Comment organiser le point d'entrée de l'application ?
-// Question: Quelle est la meilleure façon de gérer le démarrage de l'application ?
-
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");

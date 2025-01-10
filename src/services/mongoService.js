@@ -1,6 +1,3 @@
-// Question: Pourquoi créer des services séparés ?
-// Réponse:
-
 const { ObjectId } = require("mongodb");
 const db = require("../config/db");
 

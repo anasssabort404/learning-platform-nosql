@@ -1,9 +1,3 @@
-// Question : Comment gérer efficacement le cache avec Redis ?
-// Réponse :
-// Question: Quelles sont les bonnes pratiques pour les clés Redis ?
-// Réponse :
-
-// Fonctions utilitaires pour Redis
 const db = require("../config/db");
 
 async function cacheData(key, data, ttl = 3600) {
