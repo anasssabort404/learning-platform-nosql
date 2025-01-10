@@ -34,22 +34,21 @@ Les données doivent être envoyées sous forme d'objet JSON. Lors des tests ave
 ## Structure de Projet
 
 src/
-│
-├── config/
-│   ├── db.js         # Configuration de la base de données
-│   └── env.js        # Variables d'environnement
-│
-├── controllers/
-│   └── courseController.js    # Contrôleur pour la gestion des cours
-│
-├── routes/
-│   └── courseRoutes.js        # Routes API pour les cours
-│
-├── services/
-│   ├── mongoService.js        # Service MongoDB
-│   └── redisService.js        # Service Redis
-│
-└── app.js            # Point d'entrée de l'application
+  config/
+    db.js         # Configuration de la base de données
+    env.js        # Variables d'environnement
+    
+  controllers/
+    courseController.js    # Contrôleur pour la gestion des cours
+    
+  routes/
+    courseRoutes.js        # Routes API pour les cours
+    
+  services/
+    mongoService.js        # Service MongoDB
+    redisService.js        # Service Redis
+    
+  app.js            # Point d'entrée de l'application
 
 ## Table des matières
 
