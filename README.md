@@ -16,6 +16,9 @@ Pour exécuter le projet, vous devrez simplement installer les dépendances en u
 - **GET** -> `localhost:3000/api/courses/stats`  
   Cette route vous fournira des statistiques sur le nombre de cours, la durée, etc.
 
+- **DELETE** -> `localhost:3000/api/courses/:id`  
+  Cette route permet de supprimer un cours en utilisant son id
+
 - **POST** -> `localhost:3000/api/courses/`  
   Cette route permet d'ajouter un nouveau cours selon l'exemple suivant :
 

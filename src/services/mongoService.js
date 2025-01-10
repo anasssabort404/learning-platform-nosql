@@ -46,9 +46,23 @@ async function updateOne(collection, id, update) {
   }
 }
 
+async function deleteOne(collection, id) {
+  try {
+    if (!ObjectId.isValid(id)) {
+      throw new Error("Invalid ObjectId format");
+    }
+    const objectId = new ObjectId(id);
+    return await db.getDb().collection(collection).deleteOne({ _id: objectId });
+  } catch (error) {
+    console.error(`Error deleting document from ${collection}:`, error);
+    throw error;
+  }
+}
+
 module.exports = {
   findOneById,
   insertOne,
   find,
   updateOne,
+  deleteOne,
 };

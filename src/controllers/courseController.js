@@ -172,9 +172,38 @@ async function getCourseStats(req, res) {
   }
 }
 
+async function deleteCourse(req, res) {
+  try {
+    const courseId = req.params.id;
+    const result = await mongoService.deleteOne("courses", courseId);
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "Course not found",
+      });
+    }
+
+    //Re intalasation de cache
+    await redisService.invalidateCache("courses:stats");
+
+    res.json({
+      success: true,
+      message: "Course deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting course:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to delete course",
+    });
+  }
+}
+
 module.exports = {
   createCourse,
   getAllCourses,
   getCourse,
   getCourseStats,
+  deleteCourse,
 };
