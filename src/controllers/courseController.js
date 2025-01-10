@@ -4,13 +4,14 @@ const redisService = require("../services/redisService");
 
 async function createCourse(req, res) {
   try {
+    console.log(req.body);
+
     const course = {
       title: req.body.title,
       description: req.body.description,
       instructor: req.body.instructor,
-      price: req.body.price,
       duration: req.body.duration,
-      topics: req.body.topics || [],
+      location: req.body.location,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -27,6 +28,37 @@ async function createCourse(req, res) {
     res.status(500).json({
       success: false,
       error: "Failed to create course",
+    });
+  }
+}
+
+async function getAllCourses(req, res) {
+  try {
+    const cacheKey = "courses:list";
+
+    const cachedCourses = await redisService.getCachedData(cacheKey);
+    if (cachedCourses) {
+      return res.json({
+        success: true,
+        data: cachedCourses,
+        source: "cache",
+      });
+    }
+
+    const courses = await mongoService.find("courses");
+
+    await redisService.cacheData(cacheKey, courses);
+
+    res.json({
+      success: true,
+      data: courses,
+      source: "db",
+    });
+  } catch (error) {
+    console.error("Error getting courses:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to get courses",
     });
   }
 }
@@ -120,6 +152,7 @@ async function getCourseStats(req, res) {
 
 module.exports = {
   createCourse,
+  getAllCourses,
   getCourse,
   getCourseStats,
 };
