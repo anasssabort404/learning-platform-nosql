@@ -120,17 +120,34 @@ async function getCourseStats(req, res) {
 
     // If not in cache, calculate stats
     const courses = await mongoService.find("courses");
+
+    if (!courses.length) {
+      return res.json({
+        success: true,
+        data: {
+          totalCourses: 0,
+          totalDuration: 0,
+          locationDistribution: {},
+          averageDuration: 0,
+        },
+      });
+    }
+
     const stats = {
       totalCourses: courses.length,
-      averagePrice:
-        courses.reduce((acc, course) => acc + course.price, 0) / courses.length,
-      totalDuration: courses.reduce((acc, course) => acc + course.duration, 0),
-      topicsDistribution: courses.reduce((acc, course) => {
-        course.topics.forEach((topic) => {
-          acc[topic] = (acc[topic] || 0) + 1;
-        });
+      totalDuration: courses.reduce(
+        (acc, course) => acc + (course.duration || 0),
+        0
+      ),
+      locationDistribution: courses.reduce((acc, course) => {
+        if (course.location) {
+          acc[course.location] = (acc[course.location] || 0) + 1;
+        }
         return acc;
       }, {}),
+      averageDuration:
+        courses.reduce((acc, course) => acc + (course.duration || 0), 0) /
+        courses.length,
     };
 
     // Cache the stats
