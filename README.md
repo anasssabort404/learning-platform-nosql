@@ -1,3 +1,36 @@
+# Comment exécuter le projet
+
+J'ai utilisé le cluster distant MongoDB pour ma base de données, donc je n'ai pas installé MongoDB localement. J'ai ajouté l'adresse IP `0.0.0.0/0` aux paramètres réseau du cluster, ce qui permet à toute personne possédant la chaîne de connexion d'accéder à la base de données.  
+Pour Redis, je l'ai installé sur un sous-système Ubuntu pour Windows, et il fonctionne bien sans aucun problème.
+
+Pour exécuter le projet, vous devrez simplement installer les dépendances en utilisant la commande `npm install`, puis démarrer le serveur Redis sur le sous-système en utilisant la commande `redis-server` et enfin, utiliser la commande `npm start` pour lancer l'API sur le port 3000.
+
+## Routes accessibles :
+
+- **GET** -> `localhost:3000/api/courses/`  
+  Cette route vous permettra d'obtenir tous les cours.
+
+- **GET** -> `localhost:3000/api/courses/:id`  
+  Cette route vous permettra d'obtenir un cours spécifique recherché par son `_id`.
+
+- **GET** -> `localhost:3000/api/courses/stats`  
+  Cette route vous fournira des statistiques sur le nombre de cours, la durée, etc.
+
+- **POST** -> `localhost:3000/api/courses/`  
+  Cette route permet d'ajouter un nouveau cours selon l'exemple suivant :
+
+```json
+{
+  "title": "Base de données NOSQL",
+  "description": "XML, MongoDB, Redis...",
+  "instructor": "Prof DAAIF",
+  "duration": 40,
+  "location": "Amphi 4"
+}
+```
+
+Les données doivent être envoyées sous forme d'objet JSON. Lors des tests avec Postman, allez dans l'onglet Body, sélectionnez raw et choisissez JSON pour respecter le format.
+
 ## Table des matières
 
 1. [Pourquoi créer un module séparé pour les connexions aux bases de données ?](#pourquoi-créer-un-module-séparé-pour-les-connexions-aux-bases-de-données)

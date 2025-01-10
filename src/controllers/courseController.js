@@ -4,8 +4,7 @@ const redisService = require("../services/redisService");
 
 async function createCourse(req, res) {
   try {
-    console.log(req.body);
-
+    //R2cupération des information d'aprèr la requête
     const course = {
       title: req.body.title,
       description: req.body.description,
@@ -16,7 +15,10 @@ async function createCourse(req, res) {
       updatedAt: new Date(),
     };
 
+    // Insertion du document
     const result = await mongoService.insertOne("courses", course);
+
+    //Vider le cache après l'insertions pour récuperer la nouvelle liste dans la prochaine requête
     await redisService.invalidateCache("courses:list");
 
     res.status(201).json({
@@ -36,7 +38,10 @@ async function getAllCourses(req, res) {
   try {
     const cacheKey = "courses:list";
 
+    //Récupération de liste depuis le cache
     const cachedCourses = await redisService.getCachedData(cacheKey);
+
+    //Si la clé existe dans le cache retourner les informations depuis le cache
     if (cachedCourses) {
       return res.json({
         success: true,
@@ -45,10 +50,13 @@ async function getAllCourses(req, res) {
       });
     }
 
+    //Si non on va executer la requête depuis la base de données
     const courses = await mongoService.find("courses");
 
+    //Ajouter la liste au cache
     await redisService.cacheData(cacheKey, courses);
 
+    //retiurner la liste des cours et la source des informations
     res.json({
       success: true,
       data: courses,
@@ -68,7 +76,7 @@ async function getCourse(req, res) {
     const { id } = req.params;
     const cacheKey = `course:${id}`;
 
-    // Try to get from cache first
+    // Essayer de charger les informations depuis le cache
     const cachedCourse = await redisService.getCachedData(cacheKey);
     if (cachedCourse) {
       return res.json({
@@ -78,7 +86,7 @@ async function getCourse(req, res) {
       });
     }
 
-    // If not in cache, get from MongoDB
+    // Si non recuperer depuis la base de donnees distante
     const course = await mongoService.findOneById("courses", id);
     if (!course) {
       return res.status(404).json({
@@ -87,7 +95,7 @@ async function getCourse(req, res) {
       });
     }
 
-    // Cache the result
+    // Ajouter au cache
     await redisService.cacheData(cacheKey, course);
 
     res.json({
@@ -108,7 +116,6 @@ async function getCourseStats(req, res) {
   try {
     const cacheKey = "courses:stats";
 
-    // Try to get from cache first
     const cachedStats = await redisService.getCachedData(cacheKey);
     if (cachedStats) {
       return res.json({
@@ -118,7 +125,6 @@ async function getCourseStats(req, res) {
       });
     }
 
-    // If not in cache, calculate stats
     const courses = await mongoService.find("courses");
 
     if (!courses.length) {
@@ -150,8 +156,7 @@ async function getCourseStats(req, res) {
         courses.length,
     };
 
-    // Cache the stats
-    await redisService.cacheData(cacheKey, stats, 1800); // Cache for 30 minutes
+    await redisService.cacheData(cacheKey, stats, 1800); // Cache pour 30 minutes
 
     res.json({
       success: true,

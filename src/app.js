@@ -11,13 +11,13 @@ const app = express();
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
 });
 
 async function startServer() {
   try {
-    // Initialize database connections
+    // Initialization au connexion au bases de sonnées
     await db.connectMongo();
     await db.connectRedis();
 
@@ -30,7 +30,7 @@ async function startServer() {
     // Routes
     app.use("/api/courses", courseRoutes);
 
-    // Error handling middleware
+    // Gestion des exception
     app.use((err, req, res, next) => {
       console.error(err.stack);
       res.status(500).json({
@@ -49,7 +49,7 @@ async function startServer() {
   }
 }
 
-// Graceful shutdown
+// fermeture des connexion au cas d'arret de serveur
 process.on("SIGTERM", async () => {
   console.log("SIGTERM received. Starting graceful shutdown...");
   try {

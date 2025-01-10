@@ -4,6 +4,7 @@ const config = require("./env");
 
 let mongoClient, redisClient, db;
 
+//Connexion au base de donnes mongoDb en utilisant la variable d'envirenement de chaine de connexion
 async function connectMongo() {
   try {
     mongoClient = new MongoClient(config.mongodb.uri, {
@@ -22,6 +23,7 @@ async function connectMongo() {
   }
 }
 
+// Connexion au redis
 async function connectRedis() {
   try {
     redisClient = redis.createClient({
@@ -41,6 +43,7 @@ async function connectRedis() {
   }
 }
 
+//fermer les connexion
 async function closeConnections() {
   try {
     if (mongoClient) await mongoClient.close();
