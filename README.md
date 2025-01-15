@@ -37,6 +37,8 @@ Pour exécuter le projet, vous devrez simplement installer les dépendances en u
 
 Les données doivent être envoyées sous forme d'objet JSON. Lors des tests avec Postman, allez dans l'onglet Body, sélectionnez raw et choisissez JSON pour respecter le format.
 
+(Vous trouverez aussi le dossier "screenshots" où j'ai posté des captures des tests)
+
 ## Structure de Projet
 
 src
@@ -76,6 +78,8 @@ src
 11. [Quelles sont les bonnes pratiques pour les clés Redis ?](#quelles-sont-les-bonnes-pratiques-pour-les-clés-redis)
 12. [Comment organiser le point d'entrée de l'application ?](#comment-organiser-le-point-dentrée-de-lapplication)
 13. [Quelle est la meilleure façon de gérer le démarrage de l'application ?](#quelle-est-la-meilleure-façon-de-gérer-le-démarrage-de-lapplication)
+14. [Quelles sont les informations sensibles à ne jamais commiter ?](#Quelles-sont-les-informations-sensibles-à-ne-jamais-commiter)
+15. [Pourquoi utiliser des variables d'environnement ?](#Pourquoi-utiliser-des-variables-d'environnement)
 
 ---
 
